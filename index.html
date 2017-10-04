@@ -1,7 +1,684 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spor Hub Soccer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+    <style>
+        body {
+            font-size: 0.8rem;
+            zoom: 0.9;
+        }
+
+        .card-block {
+            padding-bottom: 0;
+            padding-top: 0
+        }
+    </style>
+</head>
+
+<body ng-app="myApp">
+    <div class="container-fluid" ng-controller="MaintCtrl">
+        <div class="alert alert-info" role="alert">
+            <h2><strong>{{titleGrant}}!</strong></h2>
+
+            <div class="row">
+                <div class="col-4">
+                    <select name="divisionSelect" id="divisionSelect" class="btn btn-secondary" ng-model="itemSelected" ng-change="onCategoryChange(itemSelected)"
+                        ng-options="category.name for category in categories">
+                    </select>
+                </div>
+                <div class="col-8 justify-content-end">
+                    <button type="button" class="btn btn-lg btn-success">Total Season Income ${{totalIncome | number : 2}}</button>
+                    <button type="button" class="btn btn-lg btn-warning" >Total Season Expense ${{totalCost | number : 2}}</button>
+                    <button type="button" class="btn btn-lg btn-info">Balance Season ${{totalBalance | number : 2}}</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-success" role="alert">
+                        <h5><strong>{{titleSoccerTeam}}</strong>
+                            <u>Total Income Per Season:</u> <strong>$ {{divisionAFeeTotalInSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleteamSAFee}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="teamSAFee" aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledivisionTeams}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="divisionTeams">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleteamMembers}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="teamMembers">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledivisionMembers}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="divisionMembers">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titleseasonRRounds}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="seasonRRounds">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titleseasonPRounds}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="seasonPRounds">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titleseasonTPGames}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="seasonTPGames">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titlegameLengthMin}}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="gameLengthMin">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titlegamesPRound}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="gamesPRound">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titletotalGamesSeason}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="totalGamesSeason">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-success" role="alert">
+                        <h5><strong>{{titleIdCard}}</strong>
+                            <u>Total Income Per Season:</u> <strong>$ {{divisionIdCardsFeeIncomeSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlememberCardFee}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="memberCardFee"
+                                        aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlememberCardFeeRepla}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="memberCardFeeRepla">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleidCardsTeamMembers}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="idCardsTeamMembers">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleidCardsDivisionMembers}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="idCardsDivisionMembers">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleidCardsAIncomeTeam}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="idCardsAIncomeTeam">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleidCardsAIncomeTeamRepla}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="idCardsAIncomeTeamRepla" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleidCardsIncomeDivison}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="idCardsIncomeDivison" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleidCardsIncomeDivisonRepla}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="idCardsIncomeDivisonRepla"
+                                        aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3" ng-show="idCardsIncomeClubRepla">
+                                <label for="example-number-input" class="col-form-label">{{titleidCardsIncomeClubRepla}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="idCardsIncomeClubRepla" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-success" role="alert">
+                        <h5><strong>{{titleSanctionCards}}</strong>
+                            <u>Total Income Per Season:</u> <strong>$ {{divisionSanctionsTotalSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlecardYellowRegular}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="cardYellowRegular"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlecardYellowAggressive}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="cardYellowAggressive">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlecardRedFine}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="cardRedFine">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesanctionFine}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="sanctionFine">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlecardsYellowTotalSeason}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="cardsYellowTotalSeason">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlecardsYellowTotalSeasonAggre}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="cardsYellowTotalSeasonAggre"
+                                        aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlecardsRedTotalSeason}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="cardsRedTotalSeason" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesanctionsTotalSeason}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="sanctionsTotalSeason" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-success" role="alert">
+                        <h5><strong>{{titleFacilityAdmFee}}</strong>
+                            <u>Total Income Per Season:</u> <strong>$ {{admissionFeeDivisionTotalSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titleadmissionFacilityFee}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="admissionFacilityFee"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titleassistanceTeamMembersRound}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="assistanceTeamMembersRound">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titleassitanceDivisionMembersRound}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" disabled ng-model="assitanceDivisionMembersRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlefeeTeamGameRound}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="feeTeamGameRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlefeeDivisionRound}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="feeDivisionRound">
+                                </div>
+                            </div>
+                            <!-- just All Division -->
+                            <div class="col-3" ng-show="divionGameFeeInRound">
+                                <label for="example-number-input" class="col-form-label">{{titledivionGameFeeInRound}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="divionGameFeeInRound">
+                                </div>
+                            </div>
+                            <div class="col-3" ng-show="soccerClubInRound">
+                                <label for="example-number-input" class="col-form-label">{{titlesoccerClubInRound}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="soccerClubInRound">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titlesoccerFields}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{fieldsSoccerTotalCostSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlefieldsNumberFacility}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="fieldsNumberFacility"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlefieldCostHr}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="fieldCostHr">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlefieldsCostRound}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" disabled ng-model="fieldsCostRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlefieldsCostGame}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="fieldsCostGame">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlefieldCostMin}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="fieldCostMin">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titletimeNeededHrsRound}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="timeNeededHrsRound" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleroundLenthHrs}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="roundLenthHrs" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titlegameLengthMin}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" disabled ng-change="allCalculate()" ng-model="gameLengthMin">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titlegamesPRound}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="gamesPRound">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titletotalGamesSeason}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="totalGamesSeason">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titleTimekeeperLine}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{timerkeeperLineMCostSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titletimerkeeperLineMCostHr}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="timerkeeperLineMCostHr"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titletimerkeeperLineMGame}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="timerkeeperLineMGame">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titletimerkeeperLineMCostRound}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" disabled ng-model="timerkeeperLineMCostRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titletimerkeeperLineMCostGame}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="timerkeeperLineMCostGame">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titletimerkeeperLineMCostMin}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="timerkeeperLineMCostMin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titleReferees}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{refereesCostTotalSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titlerefereeCostHr}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="refereeCostHr"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titlerefereesAtGame}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="refereesAtGame">
+                            </div>
+                            <div class="col-2">
+                                <label for="example-number-input" class="col-form-label">{{titlerefereesCostRound}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" disabled ng-model="refereesCostRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlerefereeCostGame}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="refereeCostGame">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlerefereeCostMin}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="refereeCostMin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titleSecutityGuard}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{securityTotalCostSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesecutityCostHr}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="secutityCostHr"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesecutityOnSite}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="secutityOnSite">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesecurityNumFieldsFacility}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="securityNumFieldsFacility">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesecurityCostRound}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="securityCostRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesecurityCostGame}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="securityCostGame">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titlesecurityCostMin}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="securityCostMin" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titleDoorKeeping}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{doorKeepCostTotalSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledoorKeepCostHr}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="doorKeepCostHr"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledoorKeepOnSite}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="doorKeepOnSite">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledoorKeepAtFacility}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="doorKeepAtFacility">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledoorKeepCostRound}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="doorKeepCostRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledoorKeepCostGame}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="doorKeepCostGame">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titledoorKeepCostMin}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="doorKeepCostMin" aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titleAdmFacilityCollertor}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{adminssionCollertorCostTotalSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleadminssionCollertorCostHr}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="adminssionCollertorCostHr"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleadminssionCollertorsOnSite}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="adminssionCollertorsOnSite">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleadminssionCollertorAtFacility}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="adminssionCollertorAtFacility">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleadminssionCollertorCostRound}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="adminssionCollertorCostRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleadminssionCollertorCostGame}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="adminssionCollertorCostGame">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleadminssionCollertorCostMin}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="adminssionCollertorCostMin"
+                                        aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titleMaintenance}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{paramedicCostTotalSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleparamedicCostHr}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="paramedicCostHr"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleparamedicsOnSite}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="paramedicsOnSite">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleparamedicAtFacility}}:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="paramedicAtFacility">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleparamedicCostRound}}:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="paramedicCostRound">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleparamedicCostGame}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="paramedicCostGame">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">{{titleparamedicCostMin}}:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" disabled ng-model="paramedicCostMin" 
+                                    aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="alert alert-warning" role="alert">
+                        <h5><strong>{{titlePrizes}}</strong>
+                            <u>Total Cost Per Season:</u> <strong>$ {{prizesTotalCostSeason | number : 2}}</strong></h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">First Place:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="firstPlace"
+                                    aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Second Place:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="secondPlace">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Third Place:</label>
+                                <input class="form-control" type="text" value="0" id="example-number-input" ng-change="allCalculate()" ng-model="thirdPlace">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Fourth Place:</label>
+                                <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="fourthPlace">
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Highest Scorer:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="highestScorer">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Best Goalie:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="bestGoalie"
+                                        aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">First Place Coach:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="firstPlaceCoach"
+                                        aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Trophies:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="trophies" aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Medals:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="medals" aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="example-number-input" class="col-form-label">Mailing List Sign Up Prize:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input class="form-control" type="text" value="" id="example-number-input" ng-change="allCalculate()" ng-model="mailingSingupPrize"
+                                        aria-label="Amount (to the nearest dollar)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://code.angularjs.org/angular-1.0.1.js"></script>
+    <script src="app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>
